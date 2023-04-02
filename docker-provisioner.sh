@@ -21,3 +21,6 @@ mkdir -p /opt/docker/tmp
 
 chmod 755 /opt/docker/run
 chmod 755 /opt/docker/tmp
+
+
+cd /opt/docker/build

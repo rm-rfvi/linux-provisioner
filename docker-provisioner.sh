@@ -1,3 +1,5 @@
+TIMEZONE="Australia/Adelaide"
+
 sudo mkdir -m 0755 -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -23,13 +25,18 @@ chmod 755 /opt/docker/run
 chmod 755 /opt/docker/tmp
 chmod 755 /opt/docker/build
 
+#!/bin/bash
+
+# Set the timezone as a variable (change this as needed)
+TIMEZONE="Australia/Adelaide"
+
 # Create the directory if it doesn't already exist
 if [ ! -d "/opt/docker/build/watchtower" ]; then
   mkdir -p /opt/docker/build/watchtower
 fi
 
-# Create the docker-compose.yaml file
-cat > /opt/docker/build/watchtower/docker-compose.yaml <<EOF
+# Create the docker-compose.yml file
+cat > /opt/docker/build/watchtower/docker-compose.yml <<EOF
 version: "3"
 services:
   watchtower:
@@ -42,7 +49,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Australia/Adelaide
+      - TZ=$TIMEZONE
       - UMASK_SET=022 #optional
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_LABEL_ENABLE=true
@@ -51,7 +58,8 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 EOF
 
-# Run docker-compose up against the docker-compose.yaml file
+# Run docker-compose up against the docker-compose.yml file
 cd /opt/docker/build/watchtower
-docker-compose up -d
+docker compose up -d
+
 

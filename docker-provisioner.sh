@@ -19,24 +19,26 @@ mkdir -p /opt/docker/run
 mkdir -p /opt/docker/tmp
 
 
+mkdir -p /opt/docker/run/portainer
+
+
 # Set correct permissions for the directories and configuration file
 
 chmod 755 /opt/docker/run
 chmod 755 /opt/docker/tmp
 chmod 755 /opt/docker/build
 
+mkdir -p /opt/docker/run/portainer
+
 #!/bin/bash
 
 # Set the timezone as a variable (change this as needed)
 TIMEZONE="Australia/Adelaide"
 
-# Create the directory if it doesn't already exist
-if [ ! -d "/opt/docker/build/watchtower" ]; then
-  mkdir -p /opt/docker/build/watchtower
-fi
+
 
 # Create the docker-compose.yml file
-cat > /opt/docker/build/watchtower/docker-compose.yml <<EOF
+cat > /opt/docker/build/docker-compose.yml <<EOF
 version: "3"
 services:
   watchtower:
@@ -56,10 +58,29 @@ services:
       - WATCHTOWER_INCLUDE_RESTARTING=true
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/run/portainer:/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=$TIMEZONE
+      - UMASK_SET=022 #optional
+    ports:
+     - 9000:9000
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
 EOF
 
 # Run docker-compose up against the docker-compose.yml file
-cd /opt/docker/build/watchtower
+cd /opt/docker/build
 docker compose up -d
-
 

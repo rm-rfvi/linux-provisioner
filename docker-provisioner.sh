@@ -64,6 +64,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
   portainer_agent:
     image: portainer/agent
+    restart: always
     environment:
       - PUID=1000
       - PGID=1000

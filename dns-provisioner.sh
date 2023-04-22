@@ -3,7 +3,7 @@
 # Create necessary directories
 mkdir -p /opt/docker/run/pihole/etc-pihole
 mkdir -p /opt/docker/run/pihole/etc-dnsmasq.d
-mkdir -p /opt/docker/run/portainer/data
+mkdir -p /opt/docker/run/adguard
 
 
 
